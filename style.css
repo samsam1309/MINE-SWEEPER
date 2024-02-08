@@ -1,0 +1,78 @@
+body {
+    text-align: center;
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('camouflage.png');
+
+}
+
+h1 {
+    color: #ffffff;
+    border: 2px solid #ffffff; /* Couleur de la bordure */
+    padding: 10px; /* Ajoutez un espace autour du texte */
+}
+
+.title {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 400px;
+    height: 400px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+
+td {
+    border: solid rgb(172, 246, 163);
+    background-color: grey;
+    border-radius: 5px;
+    width: 40px; 
+    height: 40px; 
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 80px;
+    width: 100%; /* Ajustez la largeur à 100% pour utiliser toute la largeur disponible */
+    margin: auto;
+}
+
+.control {
+    color: #ffffff;
+    font-size: 30px; /* Ajustez la taille de la police selon vos besoins */
+    flex-grow: 1; /* Permet à chaque élément de prendre autant d'espace que possible */
+    text-align: center; /* Centre le texte à l'intérieur de chaque élément */
+}
+
+button {
+    height: 50px;
+    width: 70px;
+    cursor: pointer;
+}
+
+.shown {
+    background-color: rgb(246, 246, 225)
+}
+
+.hint {
+    margin-right: 400px;
+   font-size: 30px;
+   cursor: pointer;
+}
+
+

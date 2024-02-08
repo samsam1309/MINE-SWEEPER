@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINE SWEEPER</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="onInit()">
+    <h1 class="title">MINE SWEEPER</h1>
+
+    <div class="controls">
+        <span class="control">LEVEL 3</span>
+        <span class="control"><button onclick="onInit()">😃</button></span>
+        <span class="control">006</span>
+    </div>
+
+    <table>
+        <tbody class="board"></tbody>
+    </table>
+
+    <div class="hint">
+        <span onclick="giveAHint()">💡</span>
+        <span onclick="giveAHint()">💡</span>
+        <span onclick="giveAHint()">💡</span>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/util.js"></script>
+</body>
+
+</html>
