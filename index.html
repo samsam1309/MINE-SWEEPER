@@ -12,9 +12,13 @@
     <h1 class="title">MINE SWEEPER</h1>
 
     <div class="controls">
-        <span class="control">LEVEL 3</span>
-        <span class="control"><button onclick="onInit()">😃</button></span>
-        <span class="control">006</span>
+        <span class="levels">
+            <button onclick="selectLevel(1)">1</button>
+            <button onclick="selectLevel(2)">2</button>
+            <button onclick="selectLevel(3)">3</button>
+        </span>
+        <span class="control"><button onclick="onInit()" class="emoji">😃</button></span>
+        <span class="control" id="timer">000</span>
     </div>
 
     <table>
@@ -22,13 +26,14 @@
     </table>
 
     <div class="hint">
-        <span onclick="giveAHint()">💡</span>
-        <span onclick="giveAHint()">💡</span>
-        <span onclick="giveAHint()">💡</span>
+       <span id="hintButton" onclick="giveAHint()">💡</span> x <span id="numOfHint"></span>
     </div>
 
     <script src="js/main.js"></script>
     <script src="js/util.js"></script>
+    <script>
+        
+    </script>
 </body>
 
 </html>
