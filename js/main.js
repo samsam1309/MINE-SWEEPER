@@ -3,9 +3,12 @@
 var BOARD_SIZE = 12
 var MINES_NUM = 32
 const MINE = "💣"
+
 var gBoard
 var gSecondsPassed
 var gTimerInterval
+var gLives = 3
+
 var gGame = {
     isOn: false,
     shownCount: 0,
@@ -13,10 +16,17 @@ var gGame = {
     secsPassed: 0
 }
 
+var isFirstClick = true;
 var gLevel
 var gHitCount
+var gSafeClickCount
+
 var hintRemaning = 3
+var safeClickRemaning = 3
+
 var numOfHint
+var numOfSafeClick
+
 
 function selectLevel(level) {
     gLevel = level;
@@ -39,13 +49,17 @@ function selectLevel(level) {
     onInit();
 }
 
-
 function onInit() {
     gGame.isOn = true
-    gHitCount = 0;
+    isFirstClick = true
+    gHitCount = 0
     hintRemaning = 3
+    gSafeClickCount = 0
+    safeClickRemaning = 3
     numOfHint = document.getElementById("numOfHint")
     numOfHint.innerText = hintRemaning
+    numOfSafeClick = document.getElementById("numOfSafeClick")
+    numOfSafeClick.innerText = safeClickRemaning
     var elBtn = document.querySelector(".emoji")
     elBtn.innerText = "😃"
     play()
@@ -55,10 +69,13 @@ function play() {
     if (gGame.isOn === true) {
         stopTimer()
         startTimer()
-        gBoard = buildBoard()
-        RandomPlaceMines(gBoard, MINES_NUM)
-        paintMines()
-        updateMinesNegsCount()
+        if (isFirstClick) {
+            gBoard = buildBoard();
+            RandomPlaceMines(gBoard, MINES_NUM);
+            paintMines()
+            updateMinesNegsCount();
+            isFirstClick = false;
+        }
         renderBoard(gBoard)
     }
 }
@@ -100,7 +117,7 @@ function buildBoard() {
                 minesAroundCount: 0,
                 isShown: false,
                 isMine: false,
-                isMarked: true
+                isMarked: false
             };
         }
     }
@@ -121,9 +138,11 @@ function renderBoard(board) {
             if (currCell.isShown) {
                 cellContent = currCell.isMine ? '💣' : currCell.minesAroundCount;
                 className += ' shown'
+            } else if (currCell.isMarked) {
+                cellContent = '🚩';
             }
 
-            strHtml += `<td class="${className}" onclick="cellClicked(event,${i}, ${j})">${cellContent}</td>`;
+            strHtml += `<td class="${className}" onclick="cellClicked(event, ${i}, ${j})" oncontextmenu="cellClicked(event, ${i}, ${j})">${cellContent}</td>`;
         }
         strHtml += "</tr>";
     }
@@ -159,18 +178,19 @@ function updateMinesNegsCount() {
     }
 
 }
-var lastClickTime = 0;
 
 function cellClicked(event, row, col) {
     event.preventDefault();
+
     if (!gGame.isOn) return;
 
     var cell = gBoard[row][col];
 
-    if (event.button === 0) {
-        // Clic gauche
+    if (event.type === 'contextmenu') {
+        placeFlag(row, col);
+    } else if (event.type === 'click' && event.button === 0) {
         if (cell.isMine) {
-            gameOver();
+            handleMineClick(row, col)
         } else if (!cell.isShown) {
             cell.isShown = true;
             if (cell.minesAroundCount === 0 && !cell.isMine) {
@@ -178,18 +198,34 @@ function cellClicked(event, row, col) {
             }
             renderBoard(gBoard);
         }
-    } else if (event.button === 2) {
-        alert("click droit")
-        // Clic droit
-        if (!cell.isShown) {
-            cell.isMarked = !cell.isMarked;
-            renderBoard(gBoard);
-        }
     }
 
     checkWin();
 }
 
+function handleMineClick(row, col) {
+    gLives--;
+
+    if (gLives === 0) {
+        checkGameOver();
+    } else {
+        alert("You clicked a mine. You have " + gLives + " lives remaining.");
+        gBoard[row][col].isShown = true;
+        renderBoard(gBoard);
+    }
+}
+
+function placeFlag(row, col) {
+    var cell = gBoard[row][col];
+    if (!cell.isShown) {
+        if (cell.isMarked) {
+            cell.isMarked = false;
+        } else {
+            cell.isMarked = true;
+        }
+        renderBoard(gBoard);
+    }
+}
 
 function revealNeighbors(row, col) {
     for (var i = row - 1; i <= row + 1; i++) {
@@ -211,8 +247,6 @@ function revealNeighbors(row, col) {
     }
 }
 
-
-
 function RandomPlaceMines(board, numOfMines) {
     for (var i = 0; i < numOfMines; i++) {
 
@@ -231,23 +265,25 @@ function RandomPlaceMines(board, numOfMines) {
     }
 }
 
-
-function gameOver() {
+function checkGameOver() {
     stopTimer()
-    for (var i = 0; i < gBoard.length; i++) {
-        for (var j = 0; j < gBoard.length; j++) {
-            var currCell = gBoard[i][j]
-            if (currCell.isMine) currCell.isShown = true
-        }
-    }
-
+    revealMines()
     renderBoard(gBoard)
     paintMines()
+
     var elBtn = document.querySelector(".emoji")
     elBtn.innerText = "🤯"
     gGame.isOn = false
 }
-
+function revealMines() {
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            var currCell = gBoard[i][j];
+            if (currCell.isMine) currCell.isShown = true;
+        }
+    }
+    renderBoard(gBoard);
+}
 function checkWin() {
     stopTimer()
     var cellShownCount = 0
@@ -261,6 +297,7 @@ function checkWin() {
     if ((cellShownCount + MINES_NUM) === BOARD_SIZE ** 2) {
         var elBtn = document.querySelector(".emoji")
         elBtn.innerText = "😎"
+        gGame.isOn = false
     }
 }
 
@@ -276,21 +313,19 @@ function paintMines() {
     }
 }
 
-function giveAHint() {
-    if (gHitCount < 3) {
+function activateSafeClick() {
+    if (gSafeClickCount < 3) {
         var safeCell = findSafeCell()
         var cell = document.querySelector(`.cell-${safeCell.i}-${safeCell.j}`)
         cell.style.backgroundColor = "pink"
         setTimeout(() => {
             cell.style.backgroundColor = "grey"
         }, 3000);
-        gHitCount++
-        hintRemaning--
-        var numOfHint = document.getElementById("numOfHint")
-        numOfHint.innerText = hintRemaning
-    } else
-        disableHintSpan()
-
+        gSafeClickCount++
+        safeClickRemaning--
+        var numOfSafeClick = document.getElementById("numOfSafeClick")
+        numOfSafeClick.innerText = safeClickRemaning
+    }
 }
 
 function findSafeCell() {

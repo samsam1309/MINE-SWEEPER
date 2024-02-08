@@ -17,15 +17,9 @@ body {
     font-size: 40px;
 }
 
-.buttons {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
 table {
-    width: 450px;
-    height: 450px;
+    width: 600px;
+    height: 600px;
     border-collapse: collapse;
     margin-bottom: 20px;
     table-layout: fixed;
@@ -42,13 +36,13 @@ td {
 }
 
 .controls {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: space-between;
     height: 80px;
     width: 50%;
-    margin-left: 400px;
-    margin-right: 350px;
+    margin-left: 350px;
+    margin-right: 450px;
 
 }
 
@@ -58,6 +52,13 @@ td {
     flex-grow: 1;
     text-align: center;
     margin: 0;
+    padding: 70px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
 }
 
 button {
@@ -82,3 +83,6 @@ button {
     font-size: 40px;
 }
 
+.levels {
+    padding: 50px;
+}
